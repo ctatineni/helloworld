@@ -1,0 +1,40 @@
+apiVersion: appsody.dev/v1beta1
+kind: AppsodyApplication
+metadata:
+  annotations:
+    image.opencontainers.org/created: "2019-11-12T07:56:20-06:00"
+    stack.appsody.dev/configured: appsody/java-spring-boot2:0.3
+    stack.appsody.dev/created: 2019-10-14T11:08:30+0000
+    stack.appsody.dev/revision: 3d2bc30ddfefeff4c18aa1ea41b08a1f06e64d17
+    stack.appsody.dev/tag: appsody/java-spring-boot2:0.3.15
+  labels:
+    image.opencontainers.org/title: helloworld
+    stack.appsody.dev/version: 0.3.15
+  name: helloworld
+  namespace: app-test
+spec:
+  applicationImage: docker-registry.default.svc:5000/app-test/helloworld:latest
+  createKnativeService: false
+  expose: true
+  livenessProbe:
+    failureThreshold: 12
+    httpGet:
+      path: /actuator/liveness
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 2
+  readinessProbe:
+    failureThreshold: 12
+    httpGet:
+      path: /actuator/health
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 2
+  service:
+    annotations:
+      prometheus.io/path: /actuator/prometheus
+      prometheus.io/scrape: "true"
+    port: 8080
+    type: NodePort
+  stack: java-spring-boot2
+  version: 1.0.0
